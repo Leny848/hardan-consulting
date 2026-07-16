@@ -1,38 +1,57 @@
-import { list, put } from '@vercel/blob'
+import { supabase } from '@/lib/supabase'
 import {
-  CONTENT_BLOB_PATH,
   DEFAULT_CONTENT,
-  blobConfigured,
+  supabaseConfigured,
   normalizeContent,
   type SiteContent,
 } from '@/lib/site-content'
 
 export async function readRemoteContent(): Promise<SiteContent | null> {
-  if (!blobConfigured()) return null
+  if (!supabaseConfigured() || !supabase) return null
 
-  const { blobs } = await list({ prefix: CONTENT_BLOB_PATH, limit: 1 })
-  const blob = blobs.find((b) => b.pathname === CONTENT_BLOB_PATH) || blobs[0]
-  if (!blob?.url) return null
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'main_content')
+      .single()
 
-  const res = await fetch(blob.url, { cache: 'no-store' })
-  if (!res.ok) return null
-  return normalizeContent(await res.json())
+    if (error) {
+      console.warn('Supabase read warning:', error.message)
+      return null
+    }
+
+    if (!data || !data.value) return null
+
+    return normalizeContent(data.value)
+  } catch (error) {
+    console.error('Failed to read remote content from Supabase:', error)
+    return null
+  }
 }
 
 export async function writeRemoteContent(content: SiteContent) {
-  if (!blobConfigured()) {
-    throw new Error('BLOB_READ_WRITE_TOKEN is not configured')
+  if (!supabaseConfigured() || !supabase) {
+    throw new Error('Supabase is not configured')
   }
 
-  const blob = await put(CONTENT_BLOB_PATH, JSON.stringify(content), {
-    access: 'public',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: 'application/json',
-    cacheControlMaxAge: 0,
-  })
+  const { data, error } = await supabase
+    .from('site_settings')
+    .upsert(
+      {
+        key: 'main_content',
+        value: content,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'key' }
+    )
+    .select()
 
-  return blob
+  if (error) {
+    throw new Error(`Error writing to Supabase: ${error.message}`)
+  }
+
+  return data
 }
 
 export async function getCurrentPassword(): Promise<string> {

@@ -235,8 +235,8 @@ export function normalizeContent(raw: unknown): SiteContent {
   }
 }
 
-export function blobConfigured() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN)
+export function supabaseConfigured() {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY)
 }
 
 export function getRequestPassword(request: Request) {

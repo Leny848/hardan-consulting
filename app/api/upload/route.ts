@@ -1,20 +1,20 @@
-import { put } from '@vercel/blob'
 import { NextResponse } from 'next/server'
-import { blobConfigured, getRequestPassword } from '@/lib/site-content'
+import { supabase } from '@/lib/supabase'
+import { supabaseConfigured, getRequestPassword } from '@/lib/site-content'
 import { getCurrentPassword } from '@/lib/remote-content'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const MAX_BYTES = 4 * 1024 * 1024 // 4MB (under Vercel serverless body limit)
+const MAX_BYTES = 4 * 1024 * 1024 // 4MB
 
 export async function POST(request: Request) {
   try {
-    if (!blobConfigured()) {
+    if (!supabaseConfigured() || !supabase) {
       return NextResponse.json(
         {
           error:
-            'Cloud storage is not set up. In Vercel → Storage → create a Blob store, then redeploy.',
+            'Cloud storage is not set up. Please set up your Supabase project credentials.',
         },
         { status: 503 },
       )
@@ -44,15 +44,26 @@ export async function POST(request: Request) {
     }
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_') || 'upload.png'
-    const pathname = `hardan/uploads/${Date.now()}-${safeName}`
+    const pathname = `${Date.now()}-${safeName}`
 
-    const blob = await put(pathname, file, {
-      access: 'public',
-      addRandomSuffix: true,
-      contentType: file.type,
-    })
+    // Upload to Supabase Storage bucket 'hardan-uploads'
+    const { data, error } = await supabase.storage
+      .from('hardan-uploads')
+      .upload(pathname, file, {
+        contentType: file.type,
+        upsert: true,
+      })
 
-    return NextResponse.json({ url: blob.url })
+    if (error) {
+      throw new Error(`Supabase Storage upload error: ${error.message}`)
+    }
+
+    // Get the public URL for the uploaded file
+    const { data: { publicUrl } } = supabase.storage
+      .from('hardan-uploads')
+      .getPublicUrl(pathname)
+
+    return NextResponse.json({ url: publicUrl })
   } catch (error) {
     console.error('POST /api/upload', error)
     return NextResponse.json(

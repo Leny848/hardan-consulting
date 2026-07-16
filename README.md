@@ -1,7 +1,7 @@
 # Hardan Consulting — Website
 
 Premium environmental & social assessment site with a live admin panel.
-Admin edits and image uploads are stored in **Vercel Blob** so every visitor sees the same content.
+Admin edits and image uploads are stored in **Supabase** so every visitor sees the same content.
 
 ---
 
@@ -14,44 +14,43 @@ https://hardan-consulting.vercel.app
 
 ---
 
-## Make admin changes work on Vercel (required)
+## Make admin changes work with Supabase (required)
 
-Admin used to save only in the browser. Now it needs **Vercel Blob** once:
+Admin changes and image uploads are persisted in **Supabase**. Follow these steps once:
 
-### 1. Create Blob storage
+### 1. Set up Supabase Project
+1. Go to [supabase.com](https://supabase.com) and create a new project.
+2. In the **SQL Editor**, run the following script to create the table for site settings:
+   ```sql
+   create table if not exists site_settings (
+     key text primary key,
+     value jsonb not null,
+     updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+   );
+   ```
+3. Go to **Storage** in the sidebar, click **New bucket**, name it `hardan-uploads`, and toggle **Public bucket** to `ON`.
 
-1. Open [vercel.com](https://vercel.com) → project **hardan-consulting**
-2. Go to **Storage**
-3. Click **Create** → **Blob**
-4. Name it e.g. `hardan-blob`
-5. **Connect** it to the `hardan-consulting` project (Production + Preview)
-6. Vercel adds `BLOB_READ_WRITE_TOKEN` automatically
+### 2. Set Environment Variables
+Copy these values from your Supabase Project Settings (Settings → API) and add them to your environment variables (in `.env.local` for local development, or in Vercel project environment variables):
+* `SUPABASE_URL` = (Your Project URL)
+* `SUPABASE_SERVICE_ROLE_KEY` = (Your `service_role` secret key — do NOT share this publicly, as it bypasses Row Level Security to allow secure admin edits server-side)
 
-### 2. Redeploy with the new code
-
-From your computer:
-
+### 3. Deploy/Run
+For local development, save them to `.env.local` and run:
 ```bash
-cd ~/Downloads/environmental-consultant-website
-git add .
-git commit -m "Persist admin edits and images with Vercel Blob"
-git push origin main
+pnpm dev
+```
+
+For production deployment, add the environment variables in your Vercel Project Settings, then deploy:
+```bash
 npx vercel --prod
 ```
 
-If Git is not connected yet, just:
-
-```bash
-cd ~/Downloads/environmental-consultant-website
-npx vercel --prod
-```
-
-### 3. Confirm it works
+### 4. Confirm it works
 
 1. Open `/admin` → log in with `hardan2024`
-2. Status should say **Edits sync to the live site automatically** (not a red Blob warning)
-3. Change a photo or text → wait for **Saved to cloud ✓**
-4. Open the homepage in a private/incognito window — your change should appear
+2. Status should say **Saved to cloud ✓** when you edit text or upload an image.
+3. Open the homepage in a private/incognito window — your changes should appear instantly.
 
 ---
 
@@ -62,10 +61,15 @@ pnpm install
 pnpm dev
 ```
 
-For local cloud saves, pull env vars after Blob is created:
+For local cloud saves, add the environment variables to `.env.local`:
 
+```env
+SUPABASE_URL=your-supabase-url
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+```
+
+And run:
 ```bash
-npx vercel env pull .env.local
 pnpm dev
 ```
 

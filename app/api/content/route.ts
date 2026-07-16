@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { blobConfigured } from '@/lib/site-content'
+import { supabaseConfigured } from '@/lib/site-content'
 import { DEFAULT_CONTENT } from '@/lib/site-content'
 import { getCurrentPassword, readRemoteContent, writeRemoteContent } from '@/lib/remote-content'
 import { getRequestPassword, normalizeContent } from '@/lib/site-content'
@@ -9,11 +9,11 @@ export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    if (!blobConfigured()) {
+    if (!supabaseConfigured()) {
       return NextResponse.json({
         mode: 'local',
         content: DEFAULT_CONTENT,
-        message: 'Vercel Blob not configured — using built-in defaults.',
+        message: 'Supabase not configured — using built-in defaults.',
       })
     }
 
@@ -34,11 +34,11 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    if (!blobConfigured()) {
+    if (!supabaseConfigured()) {
       return NextResponse.json(
         {
           error:
-            'Cloud storage is not set up. In Vercel → Storage → create a Blob store, then redeploy.',
+            'Cloud storage is not set up. Please set up your Supabase project credentials.',
         },
         { status: 503 },
       )

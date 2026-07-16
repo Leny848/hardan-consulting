@@ -1,14 +1,14 @@
 'use client'
 
 const GALLERY = [
-  { src: '/images/gallery/in-situ-assessment.jpg', title: 'In situ assessment' },
-  { src: '/images/gallery/stakeholders-engagement-1.jpg', title: 'Stakeholders engagement' },
+  { src: '/images/gallery/in-situ-assessment.jpg', title: 'Stakeholders engagement' },
+  { src: '/images/gallery/stakeholders-engagement-1.jpg', title: 'In situ assessment' },
   { src: '/images/gallery/stakeholders-engagement-2.jpg', title: 'Stakeholders engagement' },
   { src: '/images/gallery/stakeholders-engagement-3.jpg', title: 'Stakeholders engagement' },
-  { src: '/images/gallery/surface-water-sampling.jpg', title: 'Surface water sampling' },
-  { src: '/images/gallery/sediment-sampling.jpg', title: 'Sediment sampling' },
-  { src: '/images/gallery/groundwater-sampling.jpg', title: 'Groundwater sampling' },
-  { src: '/images/gallery/soil-sampling.jpg', title: 'Soil sampling' },
+  { src: '/images/gallery/surface-water-sampling.jpg', title: 'Sediment sampling' },
+  { src: '/images/gallery/sediment-sampling.jpg', title: 'Surface water sampling' },
+  { src: '/images/gallery/groundwater-sampling.jpg', title: 'Soil sampling' },
+  { src: '/images/gallery/soil-sampling.jpg', title: 'Groundwater sampling' },
   { src: '/images/gallery/air-quality-monitoring.jpg', title: 'Air quality monitoring' },
 ]
 

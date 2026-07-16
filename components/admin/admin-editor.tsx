@@ -68,7 +68,7 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
 
   const statusLabel =
     storageMode === 'local'
-      ? 'Cloud storage not connected — enable Vercel Blob (see README)'
+      ? 'Cloud database not connected — enable Supabase (see README)'
       : saveStatus === 'saving' || uploading
         ? 'Saving to cloud…'
         : saveStatus === 'saved'
@@ -116,11 +116,10 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
       <div className="premium-container flex flex-col gap-5 py-5 sm:gap-6 sm:py-8">
         {storageMode === 'local' && (
           <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
-            <p className="font-semibold">Cloud storage is not enabled yet</p>
+            <p className="font-semibold">Supabase is not configured yet</p>
             <p className="mt-1 text-destructive/90">
-              Open Vercel → your project → <strong>Storage</strong> → create a <strong>Blob</strong>{' '}
-              store (link it to this project). Then redeploy. After that, admin changes and images
-              will appear on the live site for everyone.
+              Please connect your Supabase database and storage bucket (see instructions in <strong>README.md</strong>).
+              After configuring the environment variables, admin changes and images will sync automatically.
             </p>
           </div>
         )}
