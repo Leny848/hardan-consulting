@@ -15,56 +15,67 @@ function uid() {
   return Math.random().toString(36).slice(2, 9)
 }
 
-function readAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result))
-    reader.onerror = () => reject(reader.error)
-    reader.readAsDataURL(file)
-  })
-}
-
 export function AdminEditor({ onLogout }: { onLogout: () => void }) {
-  const { content, update, reset } = useContent()
-  const [saved, setSaved] = useState(false)
+  const { content, update, reset, uploadImage, storageMode, saveStatus, saveError } = useContent()
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const portraitRef = useRef<HTMLInputElement>(null)
   const brandLogoRef = useRef<HTMLInputElement>(null)
   const logoRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
-  function flash() {
-    setSaved(true)
-    setTimeout(() => setSaved(false), 1500)
-  }
-
   function set<K extends keyof typeof content>(key: K, value: (typeof content)[K]) {
     update({ [key]: value })
-    flash()
+  }
+
+  async function uploadAndSet(file: File, apply: (url: string) => void) {
+    setUploading(true)
+    setUploadError(null)
+    try {
+      const url = await uploadImage(file)
+      apply(url)
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setUploading(false)
+    }
   }
 
   async function handlePortrait(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    set('consultantPortrait', await readAsDataUrl(file))
+    await uploadAndSet(file, (url) => set('consultantPortrait', url))
     e.target.value = ''
   }
 
   async function handleBrandLogo(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    set('brandLogo', await readAsDataUrl(file))
+    await uploadAndSet(file, (url) => set('brandLogo', url))
     e.target.value = ''
   }
 
   async function handleLogo(id: string, e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    const dataUrl = await readAsDataUrl(file)
-    set(
-      'certifications',
-      content.certifications.map((c) => (c.id === id ? { ...c, logo: dataUrl } : c)),
+    await uploadAndSet(file, (url) =>
+      set(
+        'certifications',
+        content.certifications.map((c) => (c.id === id ? { ...c, logo: url } : c)),
+      ),
     )
     e.target.value = ''
   }
+
+  const statusLabel =
+    storageMode === 'local'
+      ? 'Cloud storage not connected — enable Vercel Blob (see README)'
+      : saveStatus === 'saving' || uploading
+        ? 'Saving to cloud…'
+        : saveStatus === 'saved'
+          ? 'Saved to cloud ✓ — live for everyone'
+          : saveStatus === 'error'
+            ? saveError || 'Save failed'
+            : 'Edits sync to the live site automatically'
 
   return (
     <div className="min-h-screen bg-secondary/40 pb-8">
@@ -72,13 +83,21 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
         <div className="premium-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:py-4">
           <div className="min-w-0">
             <h1 className="font-serif text-lg font-semibold text-foreground sm:text-xl">Content Manager</h1>
-            <p className="text-xs text-muted-foreground">
-              {saved ? 'Changes saved automatically ✓' : 'Edits save automatically to this browser'}
+            <p
+              className={`text-xs ${
+                storageMode === 'local' || saveStatus === 'error' || uploadError
+                  ? 'text-destructive'
+                  : 'text-muted-foreground'
+              }`}
+            >
+              {uploadError || statusLabel}
             </p>
           </div>
-          <div className="flex w-full flex-col gap-2 xs:flex-row sm:w-auto sm:items-center">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
             <a
               href="/"
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary sm:flex-none sm:py-2"
             >
               <ExternalLink className="size-4 shrink-0" /> View site
@@ -95,10 +114,24 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
       </div>
 
       <div className="premium-container flex flex-col gap-5 py-5 sm:gap-6 sm:py-8">
+        {storageMode === 'local' && (
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+            <p className="font-semibold">Cloud storage is not enabled yet</p>
+            <p className="mt-1 text-destructive/90">
+              Open Vercel → your project → <strong>Storage</strong> → create a <strong>Blob</strong>{' '}
+              store (link it to this project). Then redeploy. After that, admin changes and images
+              will appear on the live site for everyone.
+            </p>
+          </div>
+        )}
+
         <Section title="Brand" description="Your business name, tagline, and logo.">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
             <div className="flex flex-col items-center gap-2">
-              <BrandLogo className="rounded-xl border border-border/60 bg-background/80 px-4 py-3" />
+              <BrandLogo
+                src={content.brandLogo}
+                className="rounded-xl border border-border/60 bg-background/80 px-4 py-3"
+              />
               <input
                 ref={brandLogoRef}
                 type="file"
@@ -109,8 +142,9 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
               <div className="flex flex-wrap justify-center gap-2">
                 <button
                   type="button"
+                  disabled={uploading || storageMode !== 'cloud'}
                   onClick={() => brandLogoRef.current?.click()}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary disabled:opacity-50"
                 >
                   <Upload className="size-3.5" /> Change logo
                 </button>
@@ -196,8 +230,9 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
               <div className="flex flex-wrap justify-center gap-2">
                 <button
                   type="button"
+                  disabled={uploading || storageMode !== 'cloud'}
                   onClick={() => portraitRef.current?.click()}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary disabled:opacity-50"
                 >
                   <Upload className="size-3.5" /> Change photo
                 </button>
@@ -319,8 +354,9 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
                 />
                 <button
                   type="button"
+                  disabled={uploading || storageMode !== 'cloud'}
                   onClick={() => logoRefs.current[cert.id]?.click()}
-                  className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-foreground hover:border-primary hover:text-primary"
+                  className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-foreground hover:border-primary hover:text-primary disabled:opacity-50"
                 >
                   <Upload className="size-3" /> {cert.logo ? 'Change' : 'Logo'}
                 </button>
@@ -459,7 +495,6 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
           onClick={() => {
             if (confirm('Reset all content to the original defaults?')) {
               reset()
-              flash()
             }
           }}
           className="inline-flex w-fit items-center gap-2 rounded-full border border-destructive/40 px-5 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"

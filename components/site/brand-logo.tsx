@@ -7,17 +7,25 @@ type BrandLogoProps = {
   alt?: string
   className?: string
   imgClassName?: string
-  /** White wordmark on dark hero / header over hero */
   onDark?: boolean
-  /** compact = emblem only (favicon-style mark in header on very small screens optional) */
   variant?: 'full' | 'emblem'
 }
 
 const EMBLEM = '/images/hardan-emblem.png'
 
+function isCustomImage(src?: string) {
+  if (!src) return false
+  if (src.startsWith('data:image/')) return true
+  if (src.startsWith('http://') || src.startsWith('https://')) return true
+  if (src.startsWith('/images/') && !src.includes('hardan-emblem') && !src.includes('hardan-logo')) {
+    return true
+  }
+  return false
+}
+
 /**
- * HD logo: transparent globe+leaf emblem + crisp Fraunces wordmark.
- * Adapts to light and dark backgrounds without a black box.
+ * Default: transparent globe+leaf emblem + Fraunces wordmark.
+ * Custom uploads (blob URLs / data URLs) render as the full uploaded image.
  */
 export function BrandLogo({
   src,
@@ -27,9 +35,7 @@ export function BrandLogo({
   onDark = false,
   variant = 'full',
 }: BrandLogoProps) {
-  const useCustomUpload = src && src.startsWith('data:image/')
-
-  if (useCustomUpload) {
+  if (isCustomImage(src)) {
     return (
       <span className={cn('inline-flex shrink-0 items-center', className)}>
         <img
@@ -43,19 +49,19 @@ export function BrandLogo({
 
   const textMain = onDark ? 'text-white' : 'text-primary'
   const textSub = onDark ? 'text-white/90' : 'text-primary/85'
+  const emblemSrc = src?.includes('hardan-emblem') || src?.includes('hardan-logo') ? src : EMBLEM
 
   return (
     <span className={cn('inline-flex shrink-0 items-center gap-2.5 sm:gap-3', className)}>
       <img
-        src={EMBLEM}
+        src={emblemSrc || EMBLEM}
         alt=""
         aria-hidden="true"
         className={cn(
           'h-9 w-auto shrink-0 object-contain sm:h-10',
           variant === 'emblem' && 'h-8 sm:h-9',
-          imgClassName?.includes('h-') ? '' : '',
+          imgClassName,
         )}
-        style={imgClassName?.includes('h-') ? undefined : undefined}
       />
       {variant === 'full' && (
         <span className="flex flex-col leading-none">
