@@ -19,10 +19,9 @@ export function SiteFooter() {
         </p>
 
         <a
-          href="/admin"
-          className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+
         >
-          Admin
+
         </a>
       </div>
     </footer>
