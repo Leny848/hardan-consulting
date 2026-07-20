@@ -226,11 +226,11 @@ export function normalizeContent(raw: unknown): SiteContent {
         : DEFAULT_CONTENT.brandLogo,
     certifications: Array.isArray(certifications)
       ? (certifications as Certification[]).map((c) => ({
-          id: c.id,
-          name: c.name,
-          detail: c.detail,
-          logo: typeof c.logo === 'string' ? c.logo : '',
-        }))
+        id: c.id,
+        name: c.name,
+        detail: c.detail,
+        logo: typeof c.logo === 'string' ? c.logo : '',
+      }))
       : DEFAULT_CONTENT.certifications,
   }
 }

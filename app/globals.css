@@ -249,6 +249,26 @@
   }
 }
 
+/* Sticky header background transition */
+.site-header {
+  transition: background-color 0.4s ease, backdrop-filter 0.4s ease,
+    box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.site-header--top {
+  background-color: transparent;
+  border-color: transparent;
+  backdrop-filter: blur(0);
+  box-shadow: none;
+}
+
+.site-header--scrolled {
+  background-color: #e2f0d9;
+  border-color: rgba(20, 83, 45, 0.2);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(20, 83, 45, 0.1);
+}
+
 /* Section band with subtle green glass */
 .section-band {
   background: linear-gradient(

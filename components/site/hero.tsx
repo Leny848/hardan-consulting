@@ -1,7 +1,6 @@
 'use client'
 
 import { ArrowRight } from 'lucide-react'
-import { BrandLogo } from '@/components/site/brand-logo'
 import { useContent } from '@/components/content-provider'
 
 export function Hero() {
@@ -28,13 +27,6 @@ export function Hero() {
       </div>
 
       <div className="premium-container flex flex-col items-start pb-16 pt-24 sm:pb-20 sm:pt-28 md:pb-28 md:pt-32">
-        <BrandLogo
-          alt={`${content.brandName} ${content.tagline}`}
-          className="mb-6 sm:mb-8"
-          imgClassName="h-11 sm:h-12 md:h-14"
-          onDark
-        />
-
         <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/80 sm:text-xs">
           {content.heroEyebrow}
         </span>

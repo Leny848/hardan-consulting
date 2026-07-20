@@ -39,10 +39,10 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        'fixed inset-x-0 top-0 z-50 transition-all duration-300',
+        'site-header fixed inset-x-0 top-0 z-50 border-b',
         scrolled || open
-          ? 'border-b border-border/60 bg-background/92 shadow-sm shadow-primary/5 backdrop-blur-lg'
-          : 'border-b border-transparent bg-transparent',
+          ? 'site-header--scrolled'
+          : 'site-header--top',
       )}
     >
       <div className="premium-container flex items-center justify-between gap-3 py-3 sm:py-3.5">
@@ -61,7 +61,7 @@ export function SiteHeader() {
               className={cn(
                 'whitespace-nowrap text-[13px] font-medium transition-colors xl:text-sm',
                 scrolled
-                  ? 'text-foreground/75 hover:text-primary'
+                  ? 'text-foreground/80 hover:text-primary'
                   : 'text-primary-foreground/88 hover:text-primary-foreground',
               )}
             >
@@ -75,9 +75,9 @@ export function SiteHeader() {
             href="#contact"
             className={cn(
               'hidden rounded-full px-4 py-2 text-xs font-semibold transition-colors sm:inline-block sm:px-5 sm:py-2.5 sm:text-sm',
-              scrolled
-                ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                : 'bg-accent text-accent-foreground hover:bg-accent/90',
+                scrolled
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                  : 'bg-accent text-accent-foreground hover:bg-accent/90',
             )}
           >
             Get in touch
@@ -101,7 +101,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="border-t border-border/60 bg-background/98 backdrop-blur-xl lg:hidden">
+        <div className="border-t border-primary/20 bg-[#E2F0D9] lg:hidden">
           <nav
             className="premium-container flex max-h-[calc(100dvh-4.5rem)] flex-col gap-0.5 overflow-y-auto py-3 pb-6"
             aria-label="Mobile"
