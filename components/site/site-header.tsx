@@ -39,7 +39,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        'site-header fixed inset-x-0 top-0 z-50 border-b',
+        'site-header fixed inset-x-0 top-0 z-[1050] border-b',
         scrolled || open
           ? 'site-header--scrolled'
           : 'site-header--top',
