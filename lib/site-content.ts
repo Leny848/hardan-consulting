@@ -205,6 +205,36 @@ export function normalizeContent(raw: unknown): SiteContent {
   if (!raw || typeof raw !== 'object') return DEFAULT_CONTENT
   const parsed = raw as Record<string, unknown>
 
+  const cleanDashWithComma = (val: unknown): string => {
+    if (typeof val !== 'string') return ''
+    return val.replace(/\s*—\s*/g, ', ').replace(/\s*,\s*,/g, ',')
+  }
+
+  const cleanDashWithColon = (val: unknown): string => {
+    if (typeof val !== 'string') return ''
+    return val.replace(/\s*—\s*/g, ': ')
+  }
+
+  const heroSubtitle = typeof parsed.heroSubtitle === 'string'
+    ? cleanDashWithComma(parsed.heroSubtitle)
+    : DEFAULT_CONTENT.heroSubtitle
+
+  const consultantBio = typeof parsed.consultantBio === 'string'
+    ? cleanDashWithComma(parsed.consultantBio)
+    : DEFAULT_CONTENT.consultantBio
+
+  const credentials = Array.isArray(parsed.credentials)
+    ? parsed.credentials.map((c) => cleanDashWithColon(c))
+    : DEFAULT_CONTENT.credentials
+
+  const services = Array.isArray(parsed.services)
+    ? parsed.services.map((s: any) => ({
+        id: typeof s?.id === 'string' ? s.id : '',
+        title: typeof s?.title === 'string' ? s.title : '',
+        description: typeof s?.description === 'string' ? cleanDashWithComma(s.description) : '',
+      }))
+    : DEFAULT_CONTENT.services
+
   let certifications = parsed.certifications
   if (!Array.isArray(certifications) && Array.isArray(parsed.affiliations)) {
     certifications = (parsed.affiliations as { id?: string; name?: string; detail?: string }[]).map(
@@ -220,6 +250,10 @@ export function normalizeContent(raw: unknown): SiteContent {
   return {
     ...DEFAULT_CONTENT,
     ...parsed,
+    heroSubtitle,
+    consultantBio,
+    credentials,
+    services,
     brandLogo:
       typeof parsed.brandLogo === 'string' && parsed.brandLogo
         ? parsed.brandLogo
@@ -228,7 +262,7 @@ export function normalizeContent(raw: unknown): SiteContent {
       ? (certifications as Certification[]).map((c) => ({
         id: c.id,
         name: c.name,
-        detail: c.detail,
+        detail: cleanDashWithComma(c.detail),
         logo: typeof c.logo === 'string' ? c.logo : '',
       }))
       : DEFAULT_CONTENT.certifications,
