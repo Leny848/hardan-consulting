@@ -13,7 +13,7 @@ export async function GET() {
       return NextResponse.json({
         mode: 'local',
         content: DEFAULT_CONTENT,
-        message: 'Supabase not configured — using built-in defaults.',
+        message: 'Supabase not configured; using built-in defaults.',
       })
     }
 
@@ -27,7 +27,7 @@ export async function GET() {
     return NextResponse.json({
       mode: 'local',
       content: DEFAULT_CONTENT,
-      message: 'Could not load cloud content — using defaults.',
+      message: 'Could not load cloud content; using defaults.',
     })
   }
 }

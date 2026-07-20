@@ -51,7 +51,7 @@ export const DEFAULT_CONTENT: SiteContent = {
   heroEyebrow: 'Environmental & Social Assessment',
   heroTitle: 'Science-based solutions for sustainable development.',
   heroSubtitle:
-    'Hardan Consulting Limited delivers advanced, science-based environmental and social solutions across governments, development finance, energy, infrastructure, mining, and manufacturing — combining technical expertise with regulatory knowledge.',
+    'Hardan Consulting Limited delivers advanced, science-based environmental and social solutions across governments, development finance, energy, infrastructure, mining, and manufacturing, combining technical expertise with regulatory knowledge.',
   heroCta: 'Contact us',
 
   consultantName: 'Hardan Consulting Limited',
@@ -60,11 +60,11 @@ export const DEFAULT_CONTENT: SiteContent = {
     'We are an Environmental and Social assessment firm providing advanced, science-based, and sustainable environmental and social solutions to clients across governments, development finance institutions, energy, telecommunication, power, infrastructure, water resources, agriculture, mining, and manufacturing industries. We combine technical expertise with regulatory knowledge to support organizations in meeting compliance obligations while enhancing their environmental and social performance.',
   consultantPortrait: '/images/about-team.png',
   credentials: [
-    'Compliance — high-quality environmental and social services for governments and industry',
-    'Risk management — impact assessment, mitigation planning, and monitoring',
-    'Partnership — long-term client relationships that foster innovation and knowledge sharing',
-    'Sustainability — climate adaptation and mitigation at local, regional, and national levels',
-    'Inclusion — community participation and gender-sensitive project planning',
+    'Compliance: high-quality environmental and social services for governments and industry',
+    'Risk management: impact assessment, mitigation planning, and monitoring',
+    'Partnership: long-term client relationships that foster innovation and knowledge sharing',
+    'Sustainability: climate adaptation and mitigation at local, regional, and national levels',
+    'Inclusion: community participation and gender-sensitive project planning',
   ],
 
   stats: [
@@ -183,7 +183,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       id: 'c2',
       name: 'NESREA',
       detail:
-        'National Environmental Standards and Regulations Enforcement Agency — regulatory compliance partner',
+        'National Environmental Standards and Regulations Enforcement Agency, our regulatory compliance partner',
       logo: '/images/certifications/nesrea.png',
     },
   ],

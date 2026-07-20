@@ -14,7 +14,7 @@ export function Values() {
             Our values
           </h2>
           <p className="mt-4 leading-relaxed text-muted-foreground">
-            Integrity, excellence, and collaboration guide every engagement — with a commitment to
+            Integrity, excellence, and collaboration guide every engagement, backed by a commitment to
             diversity, sustainability, and responsibility.
           </p>
         </div>

@@ -17,7 +17,7 @@ export function Contact() {
     const form = e.currentTarget
     const data = new FormData(form)
 
-    // FormSubmit delivers straight to the admin Contact email — no Resend / no API route.
+    // FormSubmit delivers straight to the admin Contact email (no Resend, no API route).
     try {
       const res = await fetch(
         `https://formsubmit.co/ajax/${encodeURIComponent(content.contactEmail)}`,
@@ -53,7 +53,7 @@ export function Contact() {
             Let&apos;s talk about your project
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Whether you need an impact assessment, ESMP development, or ongoing advisory — send a
+            Whether you need an impact assessment, ESMP development, or ongoing advisory, send a
             message and we&apos;ll respond within one business day.
           </p>
 

@@ -25,7 +25,7 @@ export function Gallery() {
           </h2>
           <p className="mt-4 leading-relaxed text-muted-foreground">
             From in-situ assessments and stakeholder engagement to water, soil, sediment, and air
-            quality monitoring — rigorous data collection in the field.
+            quality monitoring, we deliver rigorous data collection in the field.
           </p>
         </div>
 

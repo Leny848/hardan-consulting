@@ -68,11 +68,11 @@ export function AdminEditor({ onLogout }: { onLogout: () => void }) {
 
   const statusLabel =
     storageMode === 'local'
-      ? 'Cloud database not connected — enable Supabase (see README)'
+      ? 'Cloud database not connected (please enable Supabase, see README)'
       : saveStatus === 'saving' || uploading
         ? 'Saving to cloud…'
         : saveStatus === 'saved'
-          ? 'Saved to cloud ✓ — live for everyone'
+          ? 'Saved to cloud ✓ (live for everyone)'
           : saveStatus === 'error'
             ? saveError || 'Save failed'
             : 'Edits sync to the live site automatically'

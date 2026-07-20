@@ -19,7 +19,7 @@ export function Certifications() {
             Certifications & regulatory bodies
           </h2>
           <p className="mt-4 leading-relaxed text-muted-foreground">
-            Registered and recognised by Nigeria&apos;s leading environmental regulators — ensuring
+            We are registered and recognised by Nigeria&apos;s leading environmental regulators, ensuring
             every project meets national compliance standards.
           </p>
         </div>

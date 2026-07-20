@@ -20,7 +20,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: 'Hardan Consulting | Environmental & Social Assessment',
   description:
-    'Hardan Consulting Limited — science-based environmental and social assessment, ESMP development, regulatory compliance, and sustainability advisory in Abuja, Nigeria.',
+    'Hardan Consulting Limited provides science-based environmental and social assessment, ESMP development, regulatory compliance, and sustainability advisory in Abuja, Nigeria.',
   icons: {
     icon: [{ url: '/icon.png', sizes: '512x512', type: 'image/png' }],
     apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],

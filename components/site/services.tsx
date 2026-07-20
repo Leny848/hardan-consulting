@@ -21,7 +21,7 @@ export function Services() {
             Our core services
           </h2>
           <p className="mt-4 leading-relaxed text-muted-foreground">
-            Full environmental and social consulting — from baseline studies and regulatory
+            We offer comprehensive environmental and social consulting, from baseline studies and regulatory
             compliance to gender inclusion, ESMP development, and FMEnv approvals.
           </p>
         </div>

@@ -33,7 +33,7 @@ export function WorkExperience() {
             Work experiences
           </span>
           <h2 className="mt-3 font-serif text-3xl font-semibold text-foreground md:text-4xl">
-            Bulka Erosion &amp; Stormwater Site Rehabilitation — ESMP 2025
+            Bulka Erosion &amp; Stormwater Site Rehabilitation (ESMP 2025)
           </h2>
           <p className="mt-4 leading-relaxed text-muted-foreground">
             End-to-end ESMP delivery from screening and field studies through impact assessment,
